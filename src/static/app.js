@@ -39,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
         let participantsHtml = '<div class="participants"><h5>Participants</h5>';
         if (participants.length > 0) {
           participantsHtml += "<ul>";
-          participantsHtml += participants.map((p) => `<li>${escapeHtml(p)}</li>`).join("");
+          participantsHtml += participants
+            .map((p) => `<li>${escapeHtml(p)} <button class="remove-participant" data-activity="${escapeHtml(name)}" data-email="${escapeHtml(p)}" aria-label="Unregister">✕</button></li>`)
+            .join("");
           participantsHtml += "</ul>";
         } else {
           participantsHtml += '<p class="no-participants">No participants yet</p>';
@@ -61,6 +63,41 @@ document.addEventListener("DOMContentLoaded", () => {
         option.value = name;
         option.textContent = name;
         activitySelect.appendChild(option);
+
+        // Attach remove handlers to any delete buttons in this card
+        activityCard.querySelectorAll(".remove-participant").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const email = btn.getAttribute("data-email");
+            const activityName = btn.getAttribute("data-activity");
+
+            if (!confirm(`Unregister ${email} from ${activityName}?`)) return;
+
+            try {
+              const resp = await fetch(`/activities/${encodeURIComponent(activityName)}/participants?email=${encodeURIComponent(email)}`, { method: "DELETE" });
+              const resJson = await resp.json();
+              if (resp.ok) {
+                messageDiv.textContent = resJson.message;
+                messageDiv.className = "success";
+                // Refresh activities so participant lists update
+                fetchActivities();
+              } else {
+                messageDiv.textContent = resJson.detail || "An error occurred";
+                messageDiv.className = "error";
+              }
+
+              messageDiv.classList.remove("hidden");
+              setTimeout(() => {
+                messageDiv.classList.add("hidden");
+              }, 5000);
+            } catch (error) {
+              messageDiv.textContent = "Failed to unregister. Please try again.";
+              messageDiv.className = "error";
+              messageDiv.classList.remove("hidden");
+              console.error("Error unregistering:", error);
+            }
+          });
+        });
       });
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";

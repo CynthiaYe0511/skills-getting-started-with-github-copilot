@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (participants.length > 0) {
           participantsHtml += "<ul>";
           participantsHtml += participants
-            .map((p) => `<li><span class="participant-email">${escapeHtml(p)}</span><button class="remove-participant" data-email="${escapeHtml(p)}" data-activity="${escapeHtml(name)}" title="Remove participant">×</button></li>`)
+            .map((p) => `<li><span class="participant-email">${escapeHtml(p)}</span><button class="remove-participant" data-email="${escapeHtml(p)}" data-activity="${escapeHtml(name)}" aria-label="Remove participant" title="Remove participant"><svg class="trash-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3V6zm3 3h12l-1 11H7L6 9zm4-6h4l1 2H9l1-2z"/></svg></button></li>`)
             .join("");
           participantsHtml += "</ul>";
         } else {

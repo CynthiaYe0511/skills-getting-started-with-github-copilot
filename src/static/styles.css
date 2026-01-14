@@ -107,22 +107,7 @@ section h3 {
   align-items: center;
 }
 
-.activity-card .participants .remove-participant {
-  background: transparent;
-  border: none;
-  color: #c62828;
-  font-weight: bold;
-  cursor: pointer;
-  margin-left: 8px;
-  padding: 0 6px;
-  line-height: 1;
-  border-radius: 12px;
-}
 
-.activity-card .participants .remove-participant:hover {
-  color: #b71c1c;
-  background: rgba(198,40,40,0.06);
-}
 
 .activity-card .participants .no-participants {
   color: #777;

@@ -34,6 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
+        // 年级文本（支持 min_grade 或 grade_requirement）
+        const gradeRaw =
+          typeof details.min_grade !== "undefined" && details.min_grade !== null
+            ? `Grade ${details.min_grade}+`
+            : details.grade_requirement || "All grades welcome";
+
         // Build participants section
         const participants = details.participants || [];
         let participantsHtml = '<div class="participants"><h5>Participants</h5>';
@@ -51,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>${escapeHtml(details.description)}</p>
           <p><strong>Schedule:</strong> ${escapeHtml(details.schedule)}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          <p class="activity-meta"><span class="grade-badge">${escapeHtml(gradeRaw)}</span></p>
           ${participantsHtml}
         `;
 

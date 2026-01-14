@@ -40,25 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
             ? `Grade ${details.min_grade}+`
             : details.grade_requirement || "All grades welcome";
 
-        // Build participants section
-        const participants = details.participants || [];
-        let participantsHtml = '<div class="participants"><h5>Participants</h5>';
-        if (participants.length > 0) {
-          participantsHtml += "<ul>";
-          participantsHtml += participants.map((p) => `<li>${escapeHtml(p)}</li>`).join("");
-          participantsHtml += "</ul>";
-        } else {
-          participantsHtml += '<p class="no-participants">No participants yet</p>';
-        }
-        participantsHtml += "</div>";
-
         activityCard.innerHTML = `
           <h4>${escapeHtml(name)}</h4>
           <p>${escapeHtml(details.description)}</p>
           <p><strong>Schedule:</strong> ${escapeHtml(details.schedule)}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
           <p class="activity-meta"><span class="grade-badge">${escapeHtml(gradeRaw)}</span></p>
-          ${participantsHtml}
         `;
 
         activitiesList.appendChild(activityCard);

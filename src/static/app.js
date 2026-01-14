@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (participants.length > 0) {
           participantsHtml += "<ul>";
           participantsHtml += participants
-            .map((p) => `<li>${escapeHtml(p)}</li>`)
+            .map((p) => `<li><span class="participant-email">${escapeHtml(p)}</span><button class="remove-participant" data-email="${escapeHtml(p)}" data-activity="${escapeHtml(name)}" title="Remove participant">×</button></li>`)
             .join("");
           participantsHtml += "</ul>";
         } else {
@@ -111,6 +111,44 @@ document.addEventListener("DOMContentLoaded", () => {
       messageDiv.className = "error";
       messageDiv.classList.remove("hidden");
       console.error("Error signing up:", error);
+    }
+  });
+
+  // Delegate remove participant clicks
+  activitiesList.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("remove-participant")) {
+      const button = e.target;
+      const email = button.dataset.email;
+      const activity = button.dataset.activity;
+
+      try {
+        const resp = await fetch(`/activities/${encodeURIComponent(activity)}/participants?email=${encodeURIComponent(email)}`, {
+          method: "DELETE",
+        });
+        const result = await resp.json();
+
+        if (resp.ok) {
+          messageDiv.textContent = result.message;
+          messageDiv.className = "success";
+          messageDiv.classList.remove("hidden");
+          // Refresh list
+          fetchActivities();
+        } else {
+          messageDiv.textContent = result.detail || "Failed to remove participant";
+          messageDiv.className = "error";
+          messageDiv.classList.remove("hidden");
+        }
+      } catch (error) {
+        messageDiv.textContent = "Failed to remove participant. Please try again.";
+        messageDiv.className = "error";
+        messageDiv.classList.remove("hidden");
+        console.error("Error removing participant:", error);
+      }
+
+      // Hide message after 5 seconds
+      setTimeout(() => {
+        messageDiv.classList.add("hidden");
+      }, 5000);
     }
   });
 
